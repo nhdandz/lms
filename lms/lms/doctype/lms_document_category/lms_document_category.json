@@ -1,0 +1,205 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:category_name",
+ "creation": "2024-01-15 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "category_name",
+  "parent_category",
+  "is_group",
+  "sort_order",
+  "column_break_info",
+  "description",
+  "icon",
+  "ranking_section",
+  "is_ranking_enabled",
+  "ranking_type",
+  "column_break_ranking",
+  "external_contest_url",
+  "max_score",
+  "ranking_settings_section",
+  "submission_deadline",
+  "allow_self_submission",
+  "column_break_ranking_settings",
+  "require_approval"
+ ],
+ "fields": [
+  {
+   "fieldname": "category_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Category Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "parent_category",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Parent Folder",
+   "options": "LMS Document Category"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Folder"
+  },
+  {
+   "default": "0",
+   "fieldname": "sort_order",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Sort Order"
+  },
+  {
+   "fieldname": "column_break_info",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "description": "Lucide icon name (e.g., FileText, Folder, Book)",
+   "fieldname": "icon",
+   "fieldtype": "Data",
+   "label": "Icon"
+  },
+  {
+   "fieldname": "ranking_section",
+   "fieldtype": "Section Break",
+   "label": "Ranking / Leaderboard"
+  },
+  {
+   "default": "0",
+   "description": "Enable this folder as a contest/exercise leaderboard",
+   "fieldname": "is_ranking_enabled",
+   "fieldtype": "Check",
+   "label": "Enable Ranking"
+  },
+  {
+   "default": "Score",
+   "depends_on": "is_ranking_enabled",
+   "fieldname": "ranking_type",
+   "fieldtype": "Select",
+   "label": "Ranking Type",
+   "options": "Score\nRank\nPoints"
+  },
+  {
+   "fieldname": "column_break_ranking",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "is_ranking_enabled",
+   "description": "Link to external contest (Codeforces, LeetCode, etc.)",
+   "fieldname": "external_contest_url",
+   "fieldtype": "Data",
+   "label": "External Contest URL"
+  },
+  {
+   "depends_on": "is_ranking_enabled",
+   "description": "Maximum possible score (optional)",
+   "fieldname": "max_score",
+   "fieldtype": "Int",
+   "label": "Max Score"
+  },
+  {
+   "depends_on": "is_ranking_enabled",
+   "fieldname": "ranking_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Ranking Settings"
+  },
+  {
+   "depends_on": "is_ranking_enabled",
+   "fieldname": "submission_deadline",
+   "fieldtype": "Datetime",
+   "label": "Submission Deadline"
+  },
+  {
+   "default": "1",
+   "depends_on": "is_ranking_enabled",
+   "description": "Allow members to submit their own scores",
+   "fieldname": "allow_self_submission",
+   "fieldtype": "Check",
+   "label": "Allow Self Submission"
+  },
+  {
+   "fieldname": "column_break_ranking_settings",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "depends_on": "is_ranking_enabled",
+   "description": "Require admin approval for submissions",
+   "fieldname": "require_approval",
+   "fieldtype": "Check",
+   "label": "Require Approval"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-01-20 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "LMS",
+ "name": "LMS Document Category",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Moderator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Course Creator",
+   "select": 1,
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "LMS Student",
+   "select": 1,
+   "share": 1
+  }
+ ],
+ "sort_field": "sort_order",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "category_name",
+ "track_changes": 1
+}

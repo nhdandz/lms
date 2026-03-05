@@ -303,7 +303,8 @@ router.beforeEach(async (to, from, next) => {
 	}
 
 	if (!isLoggedIn) {
-		if (to.name == 'Home') router.push({ name: 'Courses' })
+		// Landing page luôn public, không redirect
+		if (to.name === 'Home') return next()
 
 		await settings.promise
 		if (!settings.data.allow_guest_access) {

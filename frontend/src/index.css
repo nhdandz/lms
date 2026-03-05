@@ -1,5 +1,6 @@
 @import 'frappe-ui/style.css';
 @import './styles/codemirror.css';
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 /* Vue Flow edge fix - Tailwind resets SVG stroke to none */
 .vue-flow__edge-path,

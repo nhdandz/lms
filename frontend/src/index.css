@@ -1,2 +1,24 @@
 @import 'frappe-ui/style.css';
 @import './styles/codemirror.css';
+
+/* Vue Flow edge fix - Tailwind resets SVG stroke to none */
+.vue-flow__edge-path,
+.vue-flow__connection-path {
+	stroke: #b1b1b7;
+	stroke-width: 2;
+	fill: none;
+}
+.vue-flow__edge.selected .vue-flow__edge-path,
+.vue-flow__edge:focus .vue-flow__edge-path,
+.vue-flow__edge:hover .vue-flow__edge-path {
+	stroke: #6366f1;
+}
+.vue-flow__arrowhead polyline {
+	stroke: #b1b1b7;
+	fill: #b1b1b7;
+}
+.vue-flow__edge.selected .vue-flow__arrowhead polyline,
+.vue-flow__edge:hover .vue-flow__arrowhead polyline {
+	stroke: #6366f1;
+	fill: #6366f1;
+}

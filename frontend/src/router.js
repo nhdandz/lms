@@ -265,6 +265,23 @@ const routes = [
 		name: 'Documents',
 		component: () => import('@/pages/Documents/Documents.vue'),
 	},
+	{
+		path: '/roadmaps',
+		name: 'RoadmapList',
+		component: () => import('@/pages/Roadmaps/RoadmapList.vue'),
+	},
+	{
+		path: '/roadmaps/:roadmapName/edit',
+		name: 'RoadmapEditor',
+		component: () => import('@/pages/Roadmaps/RoadmapEditor.vue'),
+		props: true,
+	},
+	{
+		path: '/roadmaps/:roadmapName',
+		name: 'RoadmapView',
+		component: () => import('@/pages/Roadmaps/RoadmapView.vue'),
+		props: true,
+	},
 ]
 
 let router = createRouter({

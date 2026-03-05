@@ -479,6 +479,12 @@ const getSidebarItems = () => {
 					},
 				},
 				{
+					label: 'Roadmaps',
+					icon: 'Map',
+					to: 'RoadmapList',
+					activeFor: ['RoadmapList', 'RoadmapView', 'RoadmapEditor'],
+				},
+				{
 					label: 'Batches',
 					icon: 'Users',
 					to: 'Batches',

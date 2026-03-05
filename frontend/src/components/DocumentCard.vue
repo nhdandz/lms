@@ -24,13 +24,12 @@
 					{{ document.title }}
 				</h3>
 				<div class="flex items-center space-x-2 mt-1">
-					<span class="text-xs text-ink-gray-5">
+					<span v-if="isLink" class="text-xs text-blue-500 truncate max-w-[140px]">
+						{{ document.file }}
+					</span>
+					<span v-else class="text-xs text-ink-gray-5">
 						{{ document.file_type }}
-						{{
-							document.file_size
-								? `- ${document.file_size}`
-								: ''
-						}}
+						{{ document.file_size ? `- ${document.file_size}` : '' }}
 					</span>
 				</div>
 			</div>
@@ -61,7 +60,7 @@
 
 			<div class="flex items-center space-x-1">
 				<Button
-					v-if="canPreview"
+					v-if="canPreview && !isLink"
 					variant="ghost"
 					size="sm"
 					@click.stop="$emit('preview', document)"
@@ -70,6 +69,16 @@
 					<Eye class="w-4 h-4" />
 				</Button>
 				<Button
+					v-if="isLink"
+					variant="ghost"
+					size="sm"
+					@click.stop="handleCardClick"
+					:title="__('Open link')"
+				>
+					<ExternalLink class="w-4 h-4 text-blue-500" />
+				</Button>
+				<Button
+					v-else
 					variant="ghost"
 					size="sm"
 					@click.stop="$emit('download', document)"
@@ -116,7 +125,7 @@
 			class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity"
 		>
 			<button
-				v-if="canPreview"
+				v-if="canPreview && !isLink"
 				class="p-1.5 rounded hover:bg-surface-gray-2"
 				@click.stop="$emit('preview', document)"
 				:title="__('Preview')"
@@ -124,6 +133,15 @@
 				<Eye class="w-4 h-4 text-ink-gray-6" />
 			</button>
 			<button
+				v-if="isLink"
+				class="p-1.5 rounded hover:bg-surface-gray-2"
+				@click.stop="handleCardClick"
+				:title="__('Open link')"
+			>
+				<ExternalLink class="w-4 h-4 text-blue-500" />
+			</button>
+			<button
+				v-else
 				class="p-1.5 rounded hover:bg-surface-gray-2"
 				@click.stop="$emit('download', document)"
 				:title="__('Download')"
@@ -157,6 +175,7 @@ import {
 	FileArchive,
 	FileVideo,
 	FileAudio,
+	ExternalLink,
 } from 'lucide-vue-next'
 
 const user = inject('$user')
@@ -174,8 +193,14 @@ const props = defineProps({
 
 const emit = defineEmits(['preview', 'download', 'delete'])
 
+const isLink = computed(() => (props.document.file_type || '').toLowerCase() === 'link')
+
 // Click on card to preview (if supported) or download
 const handleCardClick = () => {
+	if (isLink.value && props.document.file) {
+		window.open(props.document.file, '_blank', 'noopener')
+		return
+	}
 	if (canPreview.value) {
 		emit('preview', props.document)
 	} else {
@@ -189,6 +214,7 @@ const fileType = computed(() => {
 
 const fileIcon = computed(() => {
 	const type = fileType.value
+	if (type === 'link') return ExternalLink
 	if (type === 'pdf') return FileText
 	if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'bmp', 'ico', 'tiff', 'tif'].includes(type))
 		return FileImage
@@ -203,6 +229,7 @@ const fileIcon = computed(() => {
 
 const iconBgClass = computed(() => {
 	const type = fileType.value
+	if (type === 'link') return 'bg-blue-50'
 	if (type === 'pdf') return 'bg-red-50'
 	if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'bmp', 'ico', 'tiff', 'tif'].includes(type))
 		return 'bg-purple-50'
@@ -218,6 +245,7 @@ const iconBgClass = computed(() => {
 
 const iconColorClass = computed(() => {
 	const type = fileType.value
+	if (type === 'link') return 'text-blue-500'
 	if (type === 'pdf') return 'text-red-500'
 	if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'bmp', 'ico', 'tiff', 'tif'].includes(type))
 		return 'text-purple-500'

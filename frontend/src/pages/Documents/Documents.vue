@@ -187,6 +187,7 @@
 									:viewMode="viewMode"
 									@click="navigateToFolder(folder.name)"
 									@delete="confirmDeleteFolder"
+									@rename="confirmRenameFolder"
 								/>
 							</div>
 						</div>
@@ -318,7 +319,31 @@
 			}"
 		/>
 
-		<!-- Ranking Settings Modal -->
+		<!-- Rename Folder Dialog -->
+	<Dialog
+		v-model="showRenameDialog"
+		:options="{
+			title: __('Rename Folder'),
+			size: 'sm',
+			actions: [
+				{
+					label: __('Rename'),
+					variant: 'solid',
+					onClick: (close) => executeRename(close),
+				},
+			],
+		}"
+	>
+		<template #body-content>
+			<FormControl
+				:label="__('Folder Name')"
+				v-model="renameValue"
+				:placeholder="__('Enter new folder name')"
+			/>
+		</template>
+	</Dialog>
+
+	<!-- Ranking Settings Modal -->
 		<Dialog
 			v-model="showRankingSettings"
 			:options="{
@@ -430,6 +455,9 @@ const showUploadModal = ref(false)
 const showPreviewModal = ref(false)
 const showCreateFolder = ref(false)
 const showDeleteDialog = ref(false)
+const showRenameDialog = ref(false)
+const renamingFolder = ref(null)
+const renameValue = ref('')
 const showRankingSettings = ref(false)
 const selectedDocument = ref(null)
 const itemToDelete = ref(null)
@@ -568,6 +596,36 @@ const confirmDeleteFolder = (folder) => {
 	itemToDelete.value = folder
 	deleteType.value = 'folder'
 	showDeleteDialog.value = true
+}
+
+const confirmRenameFolder = (folder) => {
+	renamingFolder.value = folder
+	renameValue.value = folder.category_name
+	showRenameDialog.value = true
+}
+
+const executeRename = async (close) => {
+	if (!renameValue.value.trim()) {
+		toast.error(__('Folder name is required'))
+		return
+	}
+	try {
+		await createResource({
+			url: 'frappe.client.set_value',
+			params: {
+				doctype: 'LMS Document Category',
+				name: renamingFolder.value.name,
+				fieldname: 'category_name',
+				value: renameValue.value.trim(),
+			},
+		}).fetch()
+		toast.success(__('Folder renamed successfully'))
+		close()
+		folderContents.reload()
+		sidebarRef.value?.reload()
+	} catch (error) {
+		toast.error(error.messages?.[0] || __('Failed to rename folder'))
+	}
 }
 
 const executeDelete = async (close) => {

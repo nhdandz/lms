@@ -2037,6 +2037,103 @@ def delete_programming_exercise(exercise):
 	frappe.db.delete("LMS Programming Exercise", exercise)
 
 
+@frappe.whitelist(allow_guest=True)
+def get_roadmaps():
+	is_instructor_or_moderator = has_course_instructor_role() or has_moderator_role()
+	filters = {}
+	if not is_instructor_or_moderator:
+		filters["published"] = 1
+	return frappe.get_all(
+		"LMS Roadmap",
+		filters=filters,
+		fields=["name", "title", "description", "thumbnail", "published", "owner", "creation"],
+		order_by="creation desc",
+	)
+
+
+@frappe.whitelist(allow_guest=True)
+def get_roadmap(roadmap_name):
+	roadmap = frappe.get_doc("LMS Roadmap", roadmap_name)
+	data = {
+		"name": roadmap.name,
+		"title": roadmap.title,
+		"description": roadmap.description,
+		"thumbnail": roadmap.thumbnail,
+		"published": roadmap.published,
+		"owner": roadmap.owner,
+		"roadmap_json": roadmap.roadmap_json,
+	}
+
+	if not roadmap.roadmap_json:
+		data["nodes"] = []
+		data["edges"] = []
+		return data
+
+	try:
+		graph = json.loads(roadmap.roadmap_json)
+	except Exception:
+		data["nodes"] = []
+		data["edges"] = []
+		return data
+
+	nodes = graph.get("nodes", [])
+	edges = graph.get("edges", [])
+
+	user = frappe.session.user
+	if user and user != "Guest":
+		for node in nodes:
+			node_data = node.get("data", {})
+			if node_data.get("type") == "course":
+				course_name = node_data.get("course")
+				if course_name:
+					enrollment = frappe.db.get_value(
+						"LMS Enrollment",
+						{"member": user, "course": course_name},
+						["name", "progress"],
+						as_dict=True,
+					)
+					if enrollment:
+						node_data["progress"] = flt(enrollment.progress)
+						if flt(enrollment.progress) >= 100:
+							node_data["status"] = "completed"
+						elif flt(enrollment.progress) > 0:
+							node_data["status"] = "in_progress"
+						else:
+							node_data["status"] = "not_started"
+					else:
+						node_data["progress"] = 0
+						node_data["status"] = "not_started"
+
+	data["nodes"] = nodes
+	data["edges"] = edges
+	return data
+
+
+@frappe.whitelist()
+def save_roadmap(roadmap_name, title, description, roadmap_json):
+	if not has_course_instructor_role() and not has_moderator_role():
+		frappe.throw(_("Not permitted"), frappe.PermissionError)
+	doc = frappe.get_doc("LMS Roadmap", roadmap_name)
+	doc.title = title
+	doc.description = description
+	doc.roadmap_json = roadmap_json
+	doc.save(ignore_permissions=True)
+	return {"success": True}
+
+
+@frappe.whitelist()
+def create_roadmap(title, description=""):
+	if not has_course_instructor_role() and not has_moderator_role():
+		frappe.throw(_("Not permitted"), frappe.PermissionError)
+	doc = frappe.new_doc("LMS Roadmap")
+	doc.title = title
+	doc.description = description
+	doc.published = 0
+	doc.roadmap_json = json.dumps({"nodes": [], "edges": []})
+	doc.insert(ignore_permissions=True)
+	return doc.name
+
+
 @frappe.whitelist()
 def get_lesson_completion_stats(course):
 	roles = frappe.get_roles()

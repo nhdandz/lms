@@ -51,7 +51,7 @@ web_include_js = []
 # ----------
 
 # application home page (will override Website Settings)
-# home_page = "login"
+home_page = get_lms_path()
 
 # website user home page (by Role)
 # role_home_page = {

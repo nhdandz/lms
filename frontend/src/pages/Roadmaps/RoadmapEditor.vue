@@ -138,7 +138,7 @@ function addNode(type) {
 	nodeCounter++
 	const id = `node-${Date.now()}-${nodeCounter}`
 	const defaults = {
-		course: { label: '', course: '', courseTitle: '', type: 'course' },
+		course: { label: '', course: '', courseTitle: '', description: '', resources: [], type: 'course' },
 		note: { label: 'New Note', type: 'note' },
 		link: { label: 'New Link', url: '', type: 'link' },
 		milestone: { label: 'New Milestone', description: '', type: 'milestone' },

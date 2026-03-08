@@ -103,6 +103,7 @@ declare module 'vue' {
     MilestoneNode: typeof import('./src/components/Roadmap/MilestoneNode.vue')['default']
     MobileLayout: typeof import('./src/components/MobileLayout.vue')['default']
     MultiSelect: typeof import('./src/components/Controls/MultiSelect.vue')['default']
+    NodeDetailDrawer: typeof import('./src/components/Roadmap/NodeDetailDrawer.vue')['default']
     NodePanel: typeof import('./src/components/Roadmap/NodePanel.vue')['default']
     NoPermission: typeof import('./src/components/NoPermission.vue')['default']
     NoSidebarLayout: typeof import('./src/components/NoSidebarLayout.vue')['default']

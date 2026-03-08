@@ -1,5 +1,12 @@
 <template>
 	<div class="folder-leaderboard">
+		<!-- Contest Info Panel -->
+		<ContestInfoPanel
+			v-if="folder?.is_ranking_enabled"
+			:folder="folder"
+			class="mb-6"
+		/>
+
 		<!-- Header -->
 		<div class="flex items-center justify-between mb-4">
 			<div class="flex items-center gap-3">
@@ -8,16 +15,6 @@
 					<h3 class="text-lg font-semibold text-ink-gray-9">
 						{{ __('Leaderboard') }}
 					</h3>
-					<p v-if="folder?.external_contest_url" class="text-sm text-ink-gray-5">
-						<a
-							:href="folder.external_contest_url"
-							target="_blank"
-							class="text-blue-600 hover:underline flex items-center gap-1"
-						>
-							<ExternalLink class="w-3 h-3" />
-							{{ __('View Contest') }}
-						</a>
-					</p>
 				</div>
 			</div>
 
@@ -212,10 +209,11 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { createResource, Button, Badge } from 'frappe-ui'
-import { Trophy, Plus, ExternalLink, User, Check, Clock, X } from 'lucide-vue-next'
+import { Trophy, Plus, User, Check, Clock, X } from 'lucide-vue-next'
 import { usersStore } from '@/stores/user'
 import RankingSubmissionModal from './Modals/RankingSubmissionModal.vue'
 import RankingApprovalModal from './Modals/RankingApprovalModal.vue'
+import ContestInfoPanel from './ContestInfoPanel.vue'
 import dayjs from '@/utils/dayjs'
 
 const props = defineProps({

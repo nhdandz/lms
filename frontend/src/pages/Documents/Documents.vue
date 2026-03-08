@@ -144,6 +144,15 @@
 						</div>
 					</div>
 
+					<!-- Folder Notes -->
+					<FolderNotes
+						v-if="currentFolder"
+						:folder="folderContents.data?.current_folder"
+						:folder-name="currentFolder"
+						class="mb-4"
+						@updated="folderContents.reload()"
+					/>
+
 					<!-- Loading State -->
 					<div
 						v-if="folderContents.loading"
@@ -348,7 +357,7 @@
 			v-model="showRankingSettings"
 			:options="{
 				title: __('Ranking Settings'),
-				size: 'md',
+				size: 'lg',
 				actions: [
 					{
 						label: __('Save'),
@@ -359,7 +368,7 @@
 			}"
 		>
 			<template #body-content>
-				<div class="space-y-4">
+				<div class="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
 					<FormControl
 						type="checkbox"
 						v-model="rankingForm.is_ranking_enabled"
@@ -367,41 +376,156 @@
 					/>
 
 					<div v-if="rankingForm.is_ranking_enabled" class="space-y-4 pt-2">
+						<!-- Basic Settings -->
+						<div class="grid grid-cols-2 gap-4">
+							<FormControl
+								type="select"
+								v-model="rankingForm.ranking_type"
+								:label="__('Ranking Type')"
+								:options="[
+									{ label: 'Score (Higher is better)', value: 'Score' },
+									{ label: 'Rank (Lower is better)', value: 'Rank' },
+									{ label: 'Points', value: 'Points' },
+								]"
+							/>
+							<FormControl
+								type="select"
+								v-model="rankingForm.contest_type"
+								:label="__('Contest Type')"
+								:options="[
+									{ label: 'General', value: 'General' },
+									{ label: 'Club Activity', value: 'Club Activity' },
+									{ label: 'Olympic', value: 'Olympic' },
+									{ label: 'Data Challenge', value: 'Data Challenge' },
+									{ label: 'Algorithm Contest', value: 'Algorithm Contest' },
+									{ label: 'Competitive Programming', value: 'Competitive Programming' },
+								]"
+							/>
+						</div>
+
+						<div class="grid grid-cols-2 gap-4">
+							<FormControl
+								type="text"
+								v-model="rankingForm.organizer_name"
+								:label="__('Organizer / Club')"
+								:placeholder="__('e.g. CLB Tin học')"
+							/>
+							<FormControl
+								type="select"
+								v-model="rankingForm.contest_difficulty"
+								:label="__('Difficulty')"
+								:options="[
+									{ label: '—', value: '' },
+									{ label: 'Beginner', value: 'Beginner' },
+									{ label: 'Intermediate', value: 'Intermediate' },
+									{ label: 'Advanced', value: 'Advanced' },
+									{ label: 'Expert', value: 'Expert' },
+								]"
+							/>
+						</div>
+
+						<div class="grid grid-cols-2 gap-4">
+							<FormControl
+								type="text"
+								v-model="rankingForm.external_contest_url"
+								:label="__('External Contest URL')"
+								:placeholder="__('https://codeforces.com/contest/...')"
+							/>
+							<FormControl
+								type="number"
+								v-model="rankingForm.max_score"
+								:label="__('Max Score (optional)')"
+							/>
+						</div>
+
 						<FormControl
-							type="select"
-							v-model="rankingForm.ranking_type"
-							:label="__('Ranking Type')"
-							:options="[
-								{ label: 'Score (Higher is better)', value: 'Score' },
-								{ label: 'Rank (Lower is better)', value: 'Rank' },
-								{ label: 'Points', value: 'Points' },
-							]"
+							type="text"
+							v-model="rankingForm.contest_tags"
+							:label="__('Tags (phân cách bằng dấu phẩy)')"
+							:placeholder="__('e.g. graph, dp, greedy')"
 						/>
 
 						<FormControl
 							type="text"
-							v-model="rankingForm.external_contest_url"
-							:label="__('External Contest URL')"
-							:placeholder="__('https://codeforces.com/contest/...')"
+							v-model="rankingForm.contest_prize_info"
+							:label="__('Prize / Reward')"
+							:placeholder="__('e.g. Giải nhất: 500k')"
 						/>
 
-						<FormControl
-							type="number"
-							v-model="rankingForm.max_score"
-							:label="__('Max Score (optional)')"
-						/>
+						<div class="grid grid-cols-2 gap-4">
+							<FormControl
+								type="checkbox"
+								v-model="rankingForm.allow_self_submission"
+								:label="__('Allow Self Submission')"
+							/>
+							<FormControl
+								type="checkbox"
+								v-model="rankingForm.require_approval"
+								:label="__('Require Approval')"
+							/>
+						</div>
 
-						<FormControl
-							type="checkbox"
-							v-model="rankingForm.allow_self_submission"
-							:label="__('Allow Self Submission')"
-						/>
+						<!-- Contest Info Section -->
+						<div class="border-t pt-4 space-y-4">
+							<p class="text-sm font-semibold text-ink-gray-7">{{ __('Contest Information') }}</p>
 
-						<FormControl
-							type="checkbox"
-							v-model="rankingForm.require_approval"
-							:label="__('Require Approval')"
-						/>
+							<div>
+								<label class="text-sm font-medium text-ink-gray-7 block mb-1">{{ __('Contest Overview') }}</label>
+								<textarea
+									v-model="rankingForm.contest_description"
+									class="w-full rounded border border-surface-gray-3 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 resize-y"
+									rows="3"
+									:placeholder="__('Mô tả tổng quan về contest...')"
+								/>
+							</div>
+
+							<div>
+								<label class="text-sm font-medium text-ink-gray-7 block mb-1">{{ __('Problem Statement') }}</label>
+								<textarea
+									v-model="rankingForm.contest_problem_statement"
+									class="w-full rounded border border-surface-gray-3 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 resize-y"
+									rows="4"
+									:placeholder="__('Mô tả bài toán (hỗ trợ markdown)...')"
+								/>
+							</div>
+
+							<div>
+								<label class="text-sm font-medium text-ink-gray-7 block mb-1">{{ __('Data / Dataset Information') }}</label>
+								<textarea
+									v-model="rankingForm.contest_dataset_info"
+									class="w-full rounded border border-surface-gray-3 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 resize-y"
+									rows="3"
+									:placeholder="__('Thông tin về dataset...')"
+								/>
+							</div>
+
+							<FormControl
+								type="text"
+								v-model="rankingForm.contest_evaluation_metric"
+								:label="__('Evaluation Metric')"
+								:placeholder="__('e.g. Accuracy, F1-score, MSE')"
+							/>
+
+							<div>
+								<label class="text-sm font-medium text-ink-gray-7 block mb-1">{{ __('Submission Format') }}</label>
+								<textarea
+									v-model="rankingForm.contest_submission_format"
+									class="w-full rounded border border-surface-gray-3 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 resize-y"
+									rows="3"
+									:placeholder="__('Định dạng nộp bài...')"
+								/>
+							</div>
+
+							<div>
+								<label class="text-sm font-medium text-ink-gray-7 block mb-1">{{ __('Rules & Regulations') }}</label>
+								<textarea
+									v-model="rankingForm.contest_rules"
+									class="w-full rounded border border-surface-gray-3 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 resize-y"
+									rows="3"
+									:placeholder="__('Quy định tham gia...')"
+								/>
+							</div>
+						</div>
 					</div>
 				</div>
 			</template>
@@ -439,6 +563,7 @@ import DocumentsSidebar from '@/components/DocumentsSidebar.vue'
 import DocumentCard from '@/components/DocumentCard.vue'
 import FolderCard from '@/components/FolderCard.vue'
 import FolderLeaderboard from '@/components/FolderLeaderboard.vue'
+import FolderNotes from '@/components/FolderNotes.vue'
 import DocumentUploadModal from '@/components/Modals/DocumentUploadModal.vue'
 import DocumentPreviewModal from '@/components/Modals/DocumentPreviewModal.vue'
 import { debounce } from '@/utils/debounce'
@@ -473,6 +598,17 @@ const rankingForm = reactive({
 	max_score: null,
 	allow_self_submission: true,
 	require_approval: false,
+	contest_type: '',
+	organizer_name: '',
+	contest_difficulty: '',
+	contest_tags: '',
+	contest_prize_info: '',
+	contest_description: '',
+	contest_problem_statement: '',
+	contest_dataset_info: '',
+	contest_evaluation_metric: '',
+	contest_submission_format: '',
+	contest_rules: '',
 })
 
 // Computed
@@ -700,6 +836,17 @@ watch(showRankingSettings, (val) => {
 		rankingForm.max_score = folder.max_score || null
 		rankingForm.allow_self_submission = folder.allow_self_submission !== false
 		rankingForm.require_approval = folder.require_approval || false
+		rankingForm.contest_type = folder.contest_type || ''
+		rankingForm.organizer_name = folder.organizer_name || ''
+		rankingForm.contest_difficulty = folder.contest_difficulty || ''
+		rankingForm.contest_tags = folder.contest_tags || ''
+		rankingForm.contest_prize_info = folder.contest_prize_info || ''
+		rankingForm.contest_description = folder.contest_description || ''
+		rankingForm.contest_problem_statement = folder.contest_problem_statement || ''
+		rankingForm.contest_dataset_info = folder.contest_dataset_info || ''
+		rankingForm.contest_evaluation_metric = folder.contest_evaluation_metric || ''
+		rankingForm.contest_submission_format = folder.contest_submission_format || ''
+		rankingForm.contest_rules = folder.contest_rules || ''
 	}
 })
 
@@ -713,6 +860,17 @@ const saveRankingSettings = async (close) => {
 			max_score: rankingForm.max_score || null,
 			allow_self_submission: rankingForm.allow_self_submission,
 			require_approval: rankingForm.require_approval,
+			contest_type: rankingForm.contest_type || null,
+			organizer_name: rankingForm.organizer_name || null,
+			contest_difficulty: rankingForm.contest_difficulty || null,
+			contest_tags: rankingForm.contest_tags || null,
+			contest_prize_info: rankingForm.contest_prize_info || null,
+			contest_description: rankingForm.contest_description || null,
+			contest_problem_statement: rankingForm.contest_problem_statement || null,
+			contest_dataset_info: rankingForm.contest_dataset_info || null,
+			contest_evaluation_metric: rankingForm.contest_evaluation_metric || null,
+			contest_submission_format: rankingForm.contest_submission_format || null,
+			contest_rules: rankingForm.contest_rules || null,
 		})
 		toast.success(__('Ranking settings saved'))
 		close()

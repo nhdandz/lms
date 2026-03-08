@@ -44,10 +44,12 @@
 				{{ folder.label }}
 			</span>
 
-			<!-- Ranking indicator -->
-			<Trophy
+			<!-- Ranking indicator with contest type icon -->
+			<component
 				v-if="folder.is_ranking_enabled"
-				class="w-3 h-3 text-yellow-500 flex-shrink-0"
+				:is="getContestIcon()"
+				class="w-3 h-3 flex-shrink-0"
+				:class="contestIconClass"
 			/>
 
 			<!-- Count badge -->
@@ -109,12 +111,16 @@ import {
 	GripVertical,
 	Plus,
 	Trophy,
+	Medal,
+	Users,
+	BarChart2,
+	Code,
+	Activity,
 	FileText,
 	Book,
 	Image,
 	Video,
 	Music,
-	Code,
 	Archive,
 } from 'lucide-vue-next'
 import Draggable from 'vuedraggable'
@@ -147,6 +153,28 @@ const emit = defineEmits(['select', 'toggle', 'create-subfolder', 'reorder', 'mo
 const isSelected = computed(() => props.currentFolder === props.folder.name)
 const isExpanded = computed(() => props.expandedFolders.has(props.folder.name))
 const hasChildren = computed(() => props.folder.children?.length > 0)
+
+const contestIconClass = computed(() => {
+	switch (props.folder.contest_type) {
+		case 'Olympic': return 'text-yellow-500'
+		case 'Club Activity': return 'text-blue-500'
+		case 'Data Challenge': return 'text-purple-500'
+		case 'Competitive Programming': return 'text-green-500'
+		case 'Algorithm Contest': return 'text-orange-500'
+		default: return 'text-yellow-500'
+	}
+})
+
+function getContestIcon() {
+	switch (props.folder.contest_type) {
+		case 'Olympic': return Medal
+		case 'Club Activity': return Users
+		case 'Data Challenge': return BarChart2
+		case 'Competitive Programming': return Code
+		case 'Algorithm Contest': return Activity
+		default: return Trophy
+	}
+}
 
 const iconMap = {
 	Folder: Folder,

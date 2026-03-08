@@ -2364,7 +2364,8 @@ def get_folder_tree():
 		fields=[
 			"name", "category_name", "description", "icon",
 			"parent_category", "is_group", "sort_order",
-			"is_ranking_enabled", "ranking_type", "external_contest_url"
+			"is_ranking_enabled", "ranking_type", "external_contest_url",
+			"contest_type",
 		],
 		order_by="sort_order asc, category_name asc",
 	)
@@ -2401,6 +2402,7 @@ def build_folder_tree(categories, parent=None):
 				"sort_order": cat.sort_order or 0,
 				"is_ranking_enabled": cat.is_ranking_enabled,
 				"ranking_type": cat.ranking_type,
+				"contest_type": cat.contest_type,
 				"submission_count": cat.get("submission_count", 0),
 				"children": build_folder_tree(categories, cat.name),
 			}
@@ -2480,8 +2482,13 @@ def get_folder_contents(folder=None):
 			folder,
 			[
 				"name", "category_name", "parent_category",
+				"folder_notes",
 				"is_ranking_enabled", "ranking_type", "external_contest_url",
-				"max_score", "submission_deadline", "allow_self_submission", "require_approval"
+				"max_score", "submission_deadline", "allow_self_submission", "require_approval",
+				"contest_type", "organizer_name", "contest_difficulty", "contest_tags",
+				"contest_prize_info", "contest_description", "contest_problem_statement",
+				"contest_dataset_info", "contest_evaluation_metric",
+				"contest_submission_format", "contest_rules",
 			],
 			as_dict=True
 		)
@@ -2848,7 +2855,16 @@ def create_folder(category_name, parent_category=None, is_ranking_enabled=False,
 
 
 @frappe.whitelist()
-def update_folder_ranking_settings(folder_name, is_ranking_enabled, ranking_type=None, external_contest_url=None, max_score=None, submission_deadline=None, allow_self_submission=True, require_approval=False):
+def update_folder_ranking_settings(
+	folder_name, is_ranking_enabled, ranking_type=None,
+	external_contest_url=None, max_score=None, submission_deadline=None,
+	allow_self_submission=True, require_approval=False,
+	contest_type=None, organizer_name=None, contest_difficulty=None,
+	contest_tags=None, contest_prize_info=None, contest_description=None,
+	contest_problem_statement=None, contest_dataset_info=None,
+	contest_evaluation_metric=None, contest_submission_format=None,
+	contest_rules=None
+):
 	"""Update ranking settings for a folder."""
 	user = frappe.session.user
 	roles = frappe.get_roles(user)
@@ -2866,7 +2882,30 @@ def update_folder_ranking_settings(folder_name, is_ranking_enabled, ranking_type
 		doc.submission_deadline = submission_deadline
 		doc.allow_self_submission = 1 if allow_self_submission else 0
 		doc.require_approval = 1 if require_approval else 0
+		doc.contest_type = contest_type
+		doc.organizer_name = organizer_name
+		doc.contest_difficulty = contest_difficulty
+		doc.contest_tags = contest_tags
+		doc.contest_prize_info = contest_prize_info
+		doc.contest_description = contest_description
+		doc.contest_problem_statement = contest_problem_statement
+		doc.contest_dataset_info = contest_dataset_info
+		doc.contest_evaluation_metric = contest_evaluation_metric
+		doc.contest_submission_format = contest_submission_format
+		doc.contest_rules = contest_rules
 
 	doc.save()
 
 	return {"message": "Ranking settings updated", "name": doc.name}
+
+
+@frappe.whitelist()
+def update_folder_notes(folder_name, notes):
+	"""Update folder notes/announcements. Moderators only."""
+	roles = frappe.get_roles(frappe.session.user)
+	if "Moderator" not in roles and "System Manager" not in roles:
+		frappe.throw(_("Only moderators can update folder notes"))
+	doc = frappe.get_doc("LMS Document Category", folder_name)
+	doc.folder_notes = notes
+	doc.save(ignore_permissions=True)
+	return {"message": "Notes updated"}

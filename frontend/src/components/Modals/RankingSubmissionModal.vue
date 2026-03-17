@@ -28,6 +28,7 @@
 						v-if="folder?.ranking_type !== 'Rank'"
 						v-model="form.score"
 						type="number"
+						step="any"
 						:label="__('Score')"
 						:placeholder="folder?.max_score ? `Max: ${folder.max_score}` : __('Enter your score')"
 						required
@@ -36,6 +37,7 @@
 						v-if="folder?.ranking_type === 'Rank' || folder?.ranking_type === 'Score'"
 						v-model="form.rank"
 						type="number"
+						step="any"
 						:label="__('Rank')"
 						:placeholder="__('Your contest rank')"
 						:required="folder?.ranking_type === 'Rank'"

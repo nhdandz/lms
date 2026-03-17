@@ -151,7 +151,7 @@
    "depends_on": "is_ranking_enabled",
    "description": "Maximum possible score (optional)",
    "fieldname": "max_score",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "label": "Max Score"
   },
   {

@@ -2622,9 +2622,9 @@ def submit_ranking_score(category, score=None, rank=None, external_username=None
 		# Update existing submission
 		doc = frappe.get_doc("LMS Ranking Submission", existing)
 		if score is not None:
-			doc.score = int(score)
+			doc.score = float(score)
 		if rank is not None:
-			doc.rank = int(rank)
+			doc.rank = float(rank)
 		if external_username:
 			doc.external_username = external_username
 		if proof_url:
@@ -2642,8 +2642,8 @@ def submit_ranking_score(category, score=None, rank=None, external_username=None
 			"doctype": "LMS Ranking Submission",
 			"category": category,
 			"member": user,
-			"score": int(score) if score else 0,
-			"rank": int(rank) if rank else None,
+			"score": float(score) if score else 0,
+			"rank": float(rank) if rank else None,
 			"external_username": external_username,
 			"proof_url": proof_url,
 			"proof_screenshot": proof_screenshot,
@@ -2878,7 +2878,7 @@ def update_folder_ranking_settings(
 	if is_ranking_enabled:
 		doc.ranking_type = ranking_type or "Score"
 		doc.external_contest_url = external_contest_url
-		doc.max_score = int(max_score) if max_score else None
+		doc.max_score = float(max_score) if max_score else None
 		doc.submission_deadline = submission_deadline
 		doc.allow_self_submission = 1 if allow_self_submission else 0
 		doc.require_approval = 1 if require_approval else 0

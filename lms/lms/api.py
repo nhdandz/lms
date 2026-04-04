@@ -2567,7 +2567,7 @@ def get_folder_leaderboard(category, limit=50):
 		},
 		fields=[
 			"name", "member", "member_name", "score", "rank",
-			"external_username", "proof_url", "submission_date",
+			"external_username", "proof_url", "proof_screenshot", "submission_date",
 			"percentage", "max_score"
 		],
 		order_by=order_by,

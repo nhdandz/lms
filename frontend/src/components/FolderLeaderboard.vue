@@ -119,8 +119,9 @@
 					<tr
 						v-for="(submission, index) in submissions"
 						:key="submission.name"
-						class="hover:bg-surface-gray-1 transition-colors"
+						class="hover:bg-surface-gray-1 transition-colors cursor-pointer"
 						:class="{ 'bg-yellow-50': submission.member === currentUser }"
+						@click="openProof(submission)"
 					>
 						<td class="px-4 py-3">
 							<div
@@ -203,6 +204,13 @@
 			:category="category"
 			@approved="onApproved"
 		/>
+
+		<!-- Proof Viewing Modal -->
+		<RankingProofModal
+			v-if="showProofModal"
+			v-model="showProofModal"
+			:submission="selectedProofSubmission"
+		/>
 	</div>
 </template>
 
@@ -213,6 +221,7 @@ import { Trophy, Plus, User, Check, Clock, X } from 'lucide-vue-next'
 import { usersStore } from '@/stores/user'
 import RankingSubmissionModal from './Modals/RankingSubmissionModal.vue'
 import RankingApprovalModal from './Modals/RankingApprovalModal.vue'
+import RankingProofModal from './Modals/RankingProofModal.vue'
 import ContestInfoPanel from './ContestInfoPanel.vue'
 import dayjs from '@/utils/dayjs'
 
@@ -237,6 +246,8 @@ const isModerator = computed(() =>
 
 const showSubmitModal = ref(false)
 const showPendingModal = ref(false)
+const showProofModal = ref(false)
+const selectedProofSubmission = ref(null)
 
 // Leaderboard data
 const leaderboardResource = createResource({
@@ -305,6 +316,11 @@ function onSubmitted() {
 function onApproved() {
 	loadData()
 	emit('refresh')
+}
+
+function openProof(submission) {
+	selectedProofSubmission.value = submission
+	showProofModal.value = true
 }
 
 function getPositionClass(position) {

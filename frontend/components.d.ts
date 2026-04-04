@@ -121,6 +121,7 @@ declare module 'vue' {
     QuizBlock: typeof import('./src/components/QuizBlock.vue')['default']
     QuizInVideo: typeof import('./src/components/Modals/QuizInVideo.vue')['default']
     RankingApprovalModal: typeof import('./src/components/Modals/RankingApprovalModal.vue')['default']
+    RankingProofModal: typeof import('./src/components/Modals/RankingProofModal.vue')['default']
     RankingSubmissionModal: typeof import('./src/components/Modals/RankingSubmissionModal.vue')['default']
     Rating: typeof import('./src/components/Controls/Rating.vue')['default']
     RelatedCourses: typeof import('./src/components/RelatedCourses.vue')['default']

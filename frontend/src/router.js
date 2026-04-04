@@ -306,6 +306,10 @@ router.beforeEach(async (to, from, next) => {
 		// Landing page luôn public, không redirect
 		if (to.name === 'Home') return next()
 
+		// Khu vực khóa học luôn public, không cần đăng nhập hay đăng ký
+		const PUBLIC_COURSE_ROUTES = ['Courses', 'CourseDetail', 'Lesson', 'SCORMChapter', 'CourseCertification']
+		if (PUBLIC_COURSE_ROUTES.includes(to.name)) return next()
+
 		await settings.promise
 		if (!settings.data.allow_guest_access) {
 			window.location.href = '/login'

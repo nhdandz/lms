@@ -37,11 +37,11 @@
 			<div class="hero-content">
 				<div class="hero-badge reveal">
 					<span class="badge-dot" />
-					<span class="mono">Học viện Kỹ thuật Quân sự — AIIT CLB</span>
+					<span class="mono">Học viện Kỹ thuật Quân sự — IT CLB</span>
 				</div>
 
 				<h1 class="hero-headline reveal reveal-delay-1">
-					<span class="headline-line">AIIT CLUB:</span>
+					<span class="headline-line">IT CLUB:</span>
 					<span class="headline-line accent-emerald">TIÊN PHONG CÔNG NGHỆ</span>
 					<span class="headline-line accent-blue">ĐỘT PHÁ TRÍ TUỆ</span>
 				</h1>
@@ -112,7 +112,7 @@
 				<div class="section-header">
 					<span class="section-tag mono">// DỰ ÁN NỔI BẬT</span>
 					<h2 class="section-title">Research & <span class="accent-blue">Projects</span></h2>
-					<p class="section-desc">Các sản phẩm nghiên cứu thực chiến từ phòng lab AIIT</p>
+					<p class="section-desc">Các sản phẩm nghiên cứu thực chiến từ phòng lab IT</p>
 				</div>
 
 				<div class="projects-grid">
@@ -172,7 +172,7 @@
 					<span class="section-tag mono">// TUYỂN THÀNH VIÊN</span>
 					<h2 class="join-title">Bạn đam mê <span class="accent-emerald">AI & CNTT</span>?</h2>
 					<p class="join-desc">
-						AIIT Club đang tìm kiếm những sinh viên MTA có nhiệt huyết, ham học hỏi<br>
+						IT Club đang tìm kiếm những sinh viên MTA có nhiệt huyết, ham học hỏi<br>
 						và muốn tạo ra sản phẩm công nghệ có giá trị thực tế.
 					</p>
 					<div class="join-requirements">
@@ -218,12 +218,12 @@
 			<div class="container footer-inner">
 				<div class="footer-logo">
 					<span class="logo-bracket">[</span>
-					<span class="logo-text">AIIT</span>
+					<span class="logo-text">IT</span>
 					<span class="logo-bracket">]</span>
 					<span class="logo-sub">MTA</span>
 				</div>
 				<p class="footer-desc mono">
-					© {{ new Date().getFullYear() }} AIIT Club — Học viện Kỹ thuật Quân sự<br>
+					© {{ new Date().getFullYear() }} IT Club — Học viện Kỹ thuật Quân sự<br>
 					<span style="color:#10B981">inict.mta.edu.vn</span>
 				</p>
 				<div class="footer-links">
@@ -455,7 +455,7 @@ const projects = [
 ]
 
 const milestones = [
-	{ year: '10/2025', text: 'Thành lập CLB AIIT — Học viện Kỹ thuật Quân sự' },
+	{ year: '10/2025', text: 'Thành lập CLB IT — Học viện Kỹ thuật Quân sự' },
 	{ year: '12/2025', text: 'Giải Nhất OLP Tin học Sinh viên khối chuyên Tin & khối không chuyên' },
 	{ year: '12/2025', text: 'Giải Nhì OLP Trí tuệ Nhân tạo toàn quốc' },
 	{ year: '12/2025', text: 'Nhiều giải thưởng Hackathon trong nước và khu vực' },

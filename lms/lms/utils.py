@@ -777,9 +777,6 @@ def guest_access_allowed():
 def get_courses(filters=None, start=0):
 	"""Returns the list of courses."""
 
-	if not guest_access_allowed():
-		return []
-
 	if not filters:
 		filters = {}
 
@@ -921,8 +918,6 @@ def get_course_fields():
 @frappe.whitelist(allow_guest=True)
 @rate_limit(limit=500, seconds=60 * 60)
 def get_course_details(course):
-	if not guest_access_allowed():
-		return {}
 
 	fields = get_course_fields()
 	course_details = frappe.db.get_value(
@@ -1026,9 +1021,6 @@ def get_course_outline(course, progress=False):
 @frappe.whitelist(allow_guest=True)
 @rate_limit(limit=500, seconds=60 * 60)
 def get_lesson(course, chapter, lesson):
-	if not guest_access_allowed():
-		return {}
-
 	chapter_name = frappe.db.get_value("Chapter Reference", {"parent": course, "idx": chapter}, "chapter")
 	lesson_name = frappe.db.get_value("Lesson Reference", {"parent": chapter_name, "idx": lesson}, "lesson")
 	lesson_details = frappe.db.get_value(
@@ -1054,19 +1046,6 @@ def get_lesson(course, chapter, lesson):
 		["title", "paid_certificate", "disable_self_learning"],
 		as_dict=1,
 	)
-
-	if (
-		not lesson_details.include_in_preview
-		and not membership
-		and not has_moderator_role()
-		and not is_instructor(course)
-	):
-		return {
-			"no_preview": 1,
-			"title": lesson_details.title,
-			"course_title": course_info.title,
-			"disable_self_learning": course_info.disable_self_learning,
-		}
 
 	lesson_details = frappe.db.get_value(
 		"Course Lesson",
